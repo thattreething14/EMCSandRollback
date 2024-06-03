@@ -17,7 +17,7 @@ public class PluginReloadCommand implements CommandExecutor {
 
         SandRollbackPlugin.getInstance().onDisable();
         SandRollbackPlugin.getInstance().onEnable();
-        sender.sendMessage(ChatColor.GOLD + "[SandRollback]" + ChatColor.AQUA + " SandRollback plugin configuration reloaded.");
+        sender.sendMessage(ChatColor.GOLD + "[SandRollback]" + ChatColor.AQUA + " SandRollback plugin has been reloaded.");
         return true;
     }
 }
