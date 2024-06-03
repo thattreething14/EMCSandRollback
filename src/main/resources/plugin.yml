@@ -1,0 +1,7 @@
+name: SandRollbackPlugin
+version: '${version}'
+main: tree.sandrollback.SandRollbackPlugin
+api-version: '1.20'
+commands:
+  SandRollbackReload:
+    description: Reloads the sand rollback plugin (duh)
