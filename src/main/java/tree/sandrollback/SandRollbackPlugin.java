@@ -1,6 +1,5 @@
 package tree.sandrollback;
 
-import com.palmergames.bukkit.towny.TownyAPI;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -12,9 +11,9 @@ import java.io.IOException;
 import java.util.Objects;
 
 public class SandRollbackPlugin extends JavaPlugin {
-    // Default rollback time is every 5 seconds
     private long rollbackTime;
     private static SandRollbackPlugin instance;
+    private SandBreakListener sandBreakListener;
 
     @Override
     public void onEnable() {
@@ -26,13 +25,16 @@ public class SandRollbackPlugin extends JavaPlugin {
         createDefaultConfig();
         FileConfiguration config = getConfig();
         rollbackTime = config.getLong("rollback-time", 5L) * 20;
-        getServer().getPluginManager().registerEvents(new SandBreakListener(), this);
+        sandBreakListener = new SandBreakListener();
+        getServer().getPluginManager().registerEvents(sandBreakListener, this);
         Objects.requireNonNull(getCommand("SandRollbackReload")).setExecutor(new PluginReloadCommand());
     }
 
     @Override
     public void onDisable() {
-        new SandBreakListener().shutdown();
+        if (sandBreakListener != null) {
+            sandBreakListener.shutdown();
+        }
         // Plugin shutdown logic
     }
 
