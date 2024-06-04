@@ -23,15 +23,14 @@ public class SandBreakListener implements Listener {
     public SandBreakListener() {
         start();
     }
-
-    private void start() {
+    public void start() {
         rollbackTask = foliaLib.getImpl().runTimerAsync(() -> {
             // Perform block state updates
             for (Location location : new HashSet<>(blocksToRollback.keySet())) {
                 BlockState state = blocksToRollback.remove(location);
                 if (state != null) {
                     foliaLib.getImpl().runAtLocation(location, blocks -> {
-                        state.update(true, true);  // if you want to apply physics to sand change to false
+                        state.update(true, true);  // Apply physics or not based on your need
                     });
                 }
             }
@@ -77,4 +76,3 @@ public class SandBreakListener implements Listener {
     }
 
 }
-
