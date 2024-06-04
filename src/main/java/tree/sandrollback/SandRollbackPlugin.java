@@ -1,5 +1,6 @@
 package tree.sandrollback;
 
+import com.palmergames.bukkit.towny.TownyAPI;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -21,6 +22,7 @@ public class SandRollbackPlugin extends JavaPlugin {
         if (!getDataFolder().exists()) {
             getDataFolder().mkdir();
         }
+
         createDefaultConfig();
         FileConfiguration config = getConfig();
         rollbackTime = config.getLong("rollback-time", 5L) * 20;
