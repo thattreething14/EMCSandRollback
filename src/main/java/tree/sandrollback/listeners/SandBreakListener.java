@@ -1,14 +1,15 @@
 package tree.sandrollback.listeners;
 
 import com.palmergames.bukkit.towny.TownyAPI;
+import com.tcoded.folialib.FoliaLib;
+import com.tcoded.folialib.wrapper.task.WrappedTask;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.Location;
 import tree.sandrollback.SandRollbackPlugin;
 
 import java.util.HashMap;
@@ -16,29 +17,27 @@ import java.util.HashSet;
 import java.util.Map;
 
 public class SandBreakListener implements Listener {
-
+    private final FoliaLib foliaLib = new FoliaLib(SandRollbackPlugin.getInstance());
     private final Map<Location, BlockState> blocksToRollback = new HashMap<>();
-    private BukkitRunnable rollbackTask;
+    private WrappedTask rollbackTask;
     public SandBreakListener() {
         start();
     }
 
     private void start() {
-        rollbackTask = new BukkitRunnable() {
-            @Override
-            public void run() {
-                for (Location location : new HashSet<>(blocksToRollback.keySet())) {
-                    BlockState state = blocksToRollback.remove(location);
-                    if (state != null) {
-                        state.update(true, true);  // You might want to change if you want to apply physics or not
-                    }
+        rollbackTask = foliaLib.getImpl().runTimerAsync(() -> {
+            // Perform block state updates
+            for (Location location : new HashSet<>(blocksToRollback.keySet())) {
+                BlockState state = blocksToRollback.remove(location);
+                if (state != null) {
+                    foliaLib.getImpl().runAtLocation(location, blocks -> {
+                        state.update(true, true);  // if you want to apply physics to sand change to false
+                    });
                 }
             }
-        };
-        rollbackTask.runTaskTimer(SandRollbackPlugin.getInstance(),
-                SandRollbackPlugin.getInstance().getRollbackTime(),
-                SandRollbackPlugin.getInstance().getRollbackTime());
+        }, 1, SandRollbackPlugin.getInstance().getRollbackTime());
     }
+
 
     public void shutdown() {
         if (rollbackTask != null && !rollbackTask.isCancelled()) {
@@ -78,3 +77,4 @@ public class SandBreakListener implements Listener {
     }
 
 }
+
